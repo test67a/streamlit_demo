@@ -4,7 +4,7 @@ import numpy as np
 
 # Load the pickled model
 with open('model.pkl', 'rb') as file:
-    model = pickle.load(file)
+    model = pickle.load(model.pkl)
 
 def make_prediction(features):
     # Perform any necessary preprocessing on the features
