@@ -3,7 +3,7 @@ name: Deploy to Firebase
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   deploy:
@@ -19,12 +19,14 @@ jobs:
           python-version: 3.x
 
       - name: Install dependencies
-        run: ./Dockerfile
+        run: pip install streamlit
+
+      - name: Build Docker image
+        run: docker build -t streamlit-app ${{ github.workspace }}/./ -f ${{ github.workspace }}/Dockerfile --no-cache
 
       - name: Deploy to Firebase
         run: |
           curl -sL https://firebase.tools | bash
-          export FIREBASE_TOKEN=$(curl -s "https://firebase-credentials-token-generator-url.com")
+          export FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}
           streamlit run app.py &
           firebase deploy --token "$FIREBASE_TOKEN"
-
