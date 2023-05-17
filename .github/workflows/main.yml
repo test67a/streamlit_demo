@@ -1,0 +1,30 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: ./Dockerfile
+
+      - name: Deploy to Firebase
+        run: |
+          curl -sL https://firebase.tools | bash
+          export FIREBASE_TOKEN=$(curl -s "https://firebase-credentials-token-generator-url.com")
+          streamlit run app.py &
+          firebase deploy --token "$FIREBASE_TOKEN"
+
