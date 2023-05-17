@@ -3,11 +3,16 @@ name: Deploy to Firebase
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        dockerfile_name: [Dockerfile]
+        dockerfile_directory: [./]
 
     steps:
       - name: Checkout repository
@@ -22,11 +27,11 @@ jobs:
         run: pip install streamlit
 
       - name: Build Docker image
-        run: docker build -t streamlit-app ${{ github.workspace }}/./ -f ${{ github.workspace }}/Dockerfile --no-cache
+        run: docker build -t streamlit-app ${{ github.workspace }}/${{ matrix.dockerfile_directory }} -f ${{ github.workspace }}/${{ matrix.dockerfile_name }} --no-cache
 
       - name: Deploy to Firebase
         run: |
           curl -sL https://firebase.tools | bash
           export FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}
-          streamlit run app.py &
+          streamlit run main.py &
           firebase deploy --token "$FIREBASE_TOKEN"
