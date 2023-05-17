@@ -33,5 +33,5 @@ jobs:
         run: |
           curl -sL https://firebase.tools | bash
           export FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}
-          streamlit run app.py &
+          streamlit run main.py &
           firebase deploy --token "$FIREBASE_TOKEN"
